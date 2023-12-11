@@ -19,7 +19,7 @@ Navigating high-speed environments presents a significant challenge for robots, 
 Our focus is on developing a system that uses visual cues from the game to predict future movements, helping a ping-pong-playing robot anticipate actions better despite uncertainties. With a good combination of visual modeling, prediction, and a control system that leverages these cues, we tried to simulate a robot so that it can make proper contact with the ping pong ball coming in with a high enough speed.
 
 ## High-level Goals
-<img style="float: right; margin: 0px 0px 15px 15px;" src="assets/img/robot-zero-config.png" width="100" />
+<img style="float: right; margin: 0px 0px 15px 15px;" src="../assets/img/robot-zero-config.png"/>
 
 
 **Computer Vision & Planning**
