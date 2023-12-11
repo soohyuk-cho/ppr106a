@@ -8,7 +8,7 @@ logo:               'assets/img/ppr-future.jpg'
 background:         'assets/img/PPR-paint.jpg'
 tiled_bg:           false   # Set this true if you want to tile your background image, otherwise it will be covered
 locale:             en_US
-# url:                https://taylantatli.github.io/Moon
+url:                https://soohyuk-cho.github.io/ppr106a
 
 # Jekyll
 permalink:          /:title/
