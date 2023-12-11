@@ -1,14 +1,17 @@
 # Site
 title:              Ping Pong Robotics 
 bio:                'EECS C106A FA23 Final Project'
-description:        "Moon is a minimal, one column jekyll theme for your blog."
+description:        "Implement a KUKA manipulator controller to intercept an incoming high-speed ball using both \n
+(1) pre-hit trajectory forecast for anticipatory planning and \n
+(2) post-hit forecast updates for fine-grained planning.
+"
 reading_time:       true
 words_per_minute:   200
 logo:               'assets/img/ppr-future.jpg'
 background:         'assets/img/PPR-paint.jpg'
 tiled_bg:           false   # Set this true if you want to tile your background image, otherwise it will be covered
 locale:             en_US
-url:                https://taylantatli.github.io/Moon
+# url:                https://taylantatli.github.io/Moon
 
 # Jekyll
 permalink:          /:title/
@@ -38,19 +41,19 @@ disqus_shortname:   taylantatli
   #ad-slot:
 #bing-verify:
 #email:
-twitter:            username
-facebook:           username
-github-url:         username
+# twitter:            username
+# facebook:           username
+# github-url:         username
 #stackoverflow:     123456/username   from a "http://stackoverflow.com/users/123456/username" link
 #linkedin:          username
 #xing:              username
-instagram:          username
+# instagram:          username
 #lastfm:            username
 #tumblr:            username
 #medium:            '@username'
 #pinterest:         username
 #foursquare:        username
-steam:              username
+# steam:              username
 #dribbble:          username
 #youtube:           username
 #youtube-channel:   channel
