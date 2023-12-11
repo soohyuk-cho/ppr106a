@@ -1,11 +1,11 @@
 # Site
-title:              Moon
-bio:                'Minimal, one column jekyll theme.'
+title:              Ping Pong Robotics 
+bio:                'EECS C106A FA23 Final Project'
 description:        "Moon is a minimal, one column jekyll theme for your blog."
 reading_time:       true
 words_per_minute:   200
-logo:               'assets/img/logo.png'
-background:         'assets/img/placeholder-big.jpg'
+logo:               'assets/img/ppr-future.jpg'
+background:         'assets/img/PPR-paint.jpg'
 tiled_bg:           false   # Set this true if you want to tile your background image, otherwise it will be covered
 locale:             en_US
 url:                https://taylantatli.github.io/Moon
