@@ -5,39 +5,21 @@ tags: [about, Jekyll, theme, moon]
 date: 2023-12-10
 comments: false
 ---
-Implement a KUKA manipulator controller to intercept an incoming high-speed ball using both:
+![SooHyuk](/assets/img/soohyuk.png)
 
-(1) pre-hit trajectory forecast for anticipatory planning and
+<h1 style="text-align: center;">SooHyuk Cho</h1>
 
-(2) post-hit forecast updates for fine-grained planning.
+**SooHyuk** is a junior double majoring in CS and DS. He's exploring various subfields of EEECS; from computer system and architecture to robotics & control theory. He has research background in ML and computer architecture.
 
-## Introduction
+![SooHyuk](/assets/img/Sameer.png)
+
+<h1 style="text-align: center;">Sameer Nayyar</h1>
+
+**Sameer** is a junior pursuing major in EECS. He is interested in the field of control theory. He has some background in game theory research.
 
 
-Navigating high-speed environments presents a significant challenge for robots, especially in tasks like ping pong where predicting the trajectory of a fast-moving ball is crucial for timely responses.
+![SooHyuk](/assets/img/Anish.png)
 
-Our focus is on developing a system that uses visual cues from the game to predict future movements, helping a ping-pong-playing robot anticipate actions better despite uncertainties. With a good combination of visual modeling, prediction, and a control system that leverages these cues, we tried to simulate a robot so that it can make proper contact with the ping pong ball coming in with a high enough speed.
+<h1 style="text-align: center;">Anish Dhanashekar</h1>
 
-## High-level Goals
-
-**Computer Vision & Planning**
-
-1.  Compute the ball trajectory
-    
-2.  Update estimates for the ball's future position using post-hit data stream.
-    
-
-**Controller**
-
-1.  Implement a custom controller
-    
-2.  Implement Visual Servoing Algorithm
-    
-
-**Ultimate Goal:**
-
-Use KUKA to Return a High-speed Hit
-
-## ACKNOWLEDGEMENTS
-
-This project was one of the research projects of FA23 offering of EECS C106A. We would like to express our sincere gratitude to Nima Rahmanian, Gaurav Bhatnagar, and Srisai Nachuri for providing this amazing opportunity to work on Ping Pong Robotics (PPR) hardware projects and detailed advice and help on how to improve and debug our custom controller and trajectory update.
+**Anish** is an EECS major currently exploring the field of robotics and control theory. His past research experience includes computer architecture and nanotechnology.
