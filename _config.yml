@@ -1,10 +1,7 @@
 # Site
 title:              Ping Pong Robotics 
 bio:                'EECS C106A FA23 Final Project'
-description:        "Implement a KUKA manipulator controller to intercept an incoming high-speed ball using both \n
-(1) pre-hit trajectory forecast for anticipatory planning and \n
-(2) post-hit forecast updates for fine-grained planning.
-"
+description:        "Ping Pong Ping Pong"
 reading_time:       true
 words_per_minute:   200
 logo:               'assets/img/ppr-future.jpg'
@@ -67,6 +64,11 @@ disqus_shortname:   taylantatli
 
 # Gems
 gems:
+  - jekyll-mentions
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-gist
+whitelist:
   - jekyll-mentions
   - jekyll-feed
   - jekyll-sitemap
