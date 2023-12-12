@@ -15,8 +15,16 @@ We are using a <span style="color:deepskyblue">linear regression model</span> fo
 
 Based on this implementation and our test results, the average error of our prediction is around 6 inches, which was sufficient enough for the paddle to make contact with the ball in simulation, given a small amount of adjustment time after the ball bounces on the table
 
-## Joint Controller
+## Jacobian Joint Controller
 We decided to implement our own custom controller because 1) the moveIt controller was too slow for the KUKA robot arm to acquire our desired speed and 2) we had compatibility issues as our research team moved back and forth between the ROS2 foxy version and ROS2 humble version for our KUKA control code. As a separate team works on figuring out how to resolve compatibility issues so that we can actually test our KUKA arm via our ROS2 code, we set up a virtual box container so that we can try testing the joint movement in simulation (using RViz and Gazebo). We confirmed that the simulation movement aligns with our robot using the joint trajectory executioner node, one of the demo files LBR-Stack demos for KUKA's Fast Robot Interface. 
 
-We initially tried to implement the joint controller by manually calculating the Jacobian and finding the joint velocities for all 7 joints of the KUKA arm, but last week, we found and tested a kinpy package which has a function that calculates the Jacobian directly from our urdf file. Here's our implmentation of joint controller based on kinpy package and LBR executioner node: [joint controller code](../Joint_Controller)
+We initially tried to implement the joint controller by manually calculating the Jacobian and finding the joint velocities for all 7 joints of the KUKA arm, but last week, we found and tested a kinpy package which has a function that calculates the Jacobian directly from our urdf file. Here's our implmentation of joint controller based on kinpy package and LBR executioner node: [joint controller code](../Joint_Controller).
+
+## IK Controller
+Even though our implementation of jacobian-based joint controller seemed to be correct theoretically, Jacobian control was causing the KUKA arm to self-collide. In addition to that, it had trouble driving the error completely to zero when it didn’t self collide. To resolve this issue, we tried to tune different parameters in our code--from publication rate to the gain. We also tried applying nonlinear modifications to the joint velocities. However, none of these strategies worked, so we decided to switch from Jacobian control to using Inverse Kinematics. Here's our implementation of ik controller: [ik controller code](../IK_controller).
+
+Through this implementation, we were able to resolve self-collision issue. However, our IK Controller sometimes sending a command to the robot that caused it to mysteriously crash with an obtuse error message. To make sure that we don't have thie crash issue, we scaled the joint velocities to make sure they were all within the safe range. We also capped the joint positions to make sure that none of the joints were overextended.
+
+
+
 

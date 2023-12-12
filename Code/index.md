@@ -1,5 +1,5 @@
 ---
 layout: code
-title: Code Implementation Details/Files
+title: Code Implementation Details
 comments: false
 ---

@@ -5,6 +5,7 @@ tags: [about, Jekyll, theme, moon]
 date: 2023-12-10
 comments: false
 ---
+
 Implement a KUKA manipulator controller to intercept an incoming high-speed ball using both:
 
 (1) pre-hit trajectory forecast for anticipatory planning and
