@@ -1,8 +1,10 @@
 - title: Team
   url: /team/
-- title: Projects
-  url: /projects/
 - title: Design
   url: /Design/
+- title: Implementation
+  url: /Implementation/
+- title: Code
+  url: /Code/
 - title: Demo Video
   url: /Demo

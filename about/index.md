@@ -42,4 +42,4 @@ Use KUKA to Return a High-speed Hit
 
 ## ACKNOWLEDGEMENTS
 
-This project was one of the research projects of FA23 offering of EECS C106A. We would like to express our sincere gratitude to Nima Rahmanian, Gaurav Bhatnagar, and Srisai Nachuri for providing this amazing opportunity to work on Ping Pong Robotics (PPR) hardware projects and detailed advice and help on how to improve and debug our custom controller and trajectory update.
+This project was one of the research projects of FA23 offering of EECS C106A. We would like to express our sincere gratitude to Nima Rahmanian, Gaurav Bhatnagar, Srisai Nachuri, and Jet Situ for providing this amazing opportunity to work on Ping Pong Robotics (PPR) hardware projects and detailed advice and help on how to improve and debug our custom controller and trajectory update.
