@@ -15,6 +15,17 @@ We are using a <span style="color:deepskyblue">linear regression model</span> fo
 
 Based on this implementation and our test results, the average error of our prediction is around 6 inches, which was sufficient enough for the paddle to make contact with the ball in simulation, given a small amount of adjustment time after the ball bounces on the table.
 
+The figure on the right compares the predicted trajectory against the true trajectory: <img style="float: right; margin: 0px 0px 15px 15px;" src="../assets/img/live_update_ex.png"/>
+
+Here are some detailed explanations on our trajectory figure:
+- The <span style='color:mediumblue'>blue points</span> are the data points of the ball positions
+- The <span style='color:orange'>orange curve</span> is the trajectory of the ball before it bounces on the table (fit from the data points)
+- The <span style='color:darkgreen'>green curve</span> is the true trajectory of the ball after it bounces on the table
+- The <span style='color:red'>red curve</span> is the predicted trajectory of the ball after it bounces on the table, based on the trajectory of the ball before it bounces on the table
+
+We found that most of the error is caused by the predicted curve being slightly lower than the true curve, which comes from noise in predicting the ball positions based on the camera frames. Even with this noise present, the overall prediction is still decent.
+
+
 ## Jacobian Joint Controller
 We decided to implement our own <span style="color:crimson">custom controller</span> because 1) the moveIt controller was too slow for the KUKA robot arm to acquire our desired speed and 2) we had compatibility issues as our research team moved back and forth between the ROS2 foxy version and ROS2 humble version for our KUKA control code. As a separate team works on figuring out how to resolve compatibility issues so that we can actually test our KUKA arm via our ROS2 code, we set up a virtual box container so that we can try testing the joint movement in simulation (using RViz and Gazebo). We confirmed that the simulation movement aligns with our robot using the joint trajectory executioner node, one of the demo files of LBR-Stack demos for KUKA's Fast Robot Interface. 
 
