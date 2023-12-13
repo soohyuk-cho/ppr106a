@@ -5,12 +5,21 @@ tags: [about, Jekyll, theme, moon]
 date: 2023-12-10
 comments: false
 ---
-### Here's our project demo video!
+## Here's our project demo video!
 <iframe width="730" height="350" src="//www.youtube.com/embed/5y1WLJMEGgo" frameborder="0"> </iframe>
+
+Our final ROS2 code has three primary nodes, the <span style='color:darkgoldenrod'>ball_detector</span>, <span style='color:darkorange'>visual_servo</span>, and <span style='color:darkred'>workspace_controller</span> nodes. 
+
+- The <span style='color:darkgoldenrod'>ball_detector</span> node gets image data from the four cameras, and uses computer vision to locate the ball in world coordinates. 
+- The <span style='color:darkorange'>visual_servo</span> node computes the location of the target position. 
+- The <span style='color:darkred'>workspace_controller</span> node sends joint trajectories to the KUKA, based on its current joint angles and the desired target position.
+
+Here's our hand-drawn graph visualization of our ROS2 nodes and topics:
+![Graph Visualization](../assets/img/final_code_visual.png)
 
 # Conclusion
 ## Result Analysis
-As shown in the demo video, we were able to make the robot paddle of KUKA arm follow the position of the ball at a distance.
+As shown in the demo video, we were able to make the robot paddle of KUKA arm follow the position of the ball at a distance!
 
 ## Difficulties and Solution
 ### Controller Node Issues
@@ -30,6 +39,4 @@ In addition to that, Calibration matrix that has been used within our research t
 
 Our initial proposal to resolve this issue was writing the code for the AR Tags in ROS1, and then using a bridge to transmit the information through a topic to the rest of our code in ROS2. However, we were not able to implement this due to time constraints and infrastructure issues. Instead measured the relative distances physically using a measuring tape and then did additional calibration later on, which ended up working extremely well. This was an effective approach for our project as the robot base frame is fixed such that we only need to localize the paddle in the zero configuration.
 
-
-
-
+We hope to keep investigating issue futher in the upcoming semester by refining calibration matrix and resolve OpenCV version issue so that we can check if the usage of aruco marker is the valid option for our localization.
