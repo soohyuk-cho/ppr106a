@@ -9,7 +9,7 @@ comments: false
 
 <h1 style="text-align: center;">SooHyuk Cho</h1>
 
-**SooHyuk** is a junior double majoring in CS and DS. He's exploring various subfields of EEECS; from computer system and architecture to robotics & control theory. He has research background in ML and computer architecture.
+**SooHyuk** is a junior double majoring in CS and DS. He's exploring various subfields of EECS; from computer system and architecture to robotics & control theory. He has research background in ML and computer architecture.
 
 ![Sameer](../assets/img/Sameer.png)
 
