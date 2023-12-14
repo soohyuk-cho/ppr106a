@@ -40,3 +40,10 @@ In addition to that, Calibration matrix that has been used within our research t
 Our initial proposal to resolve this issue was writing the code for the AR Tags in ROS1, and then using a bridge to transmit the information through a topic to the rest of our code in ROS2. However, we were not able to implement this due to time constraints and infrastructure issues. Instead measured the relative distances physically using a measuring tape and then did additional calibration later on, which ended up working extremely well. This was an effective approach for our project as the robot base frame is fixed such that we only need to localize the paddle in the zero configuration.
 
 We hope to keep investigating issue futher in the upcoming semester by refining calibration matrix and resolve OpenCV version issue so that we can check if the usage of aruco marker is the valid option for our localization.
+
+### Integration between Controller and Vision
+When integrating control with vision, we faced several issues in parallel. First, the frequency at which we were able to detect the ball was very low. Second, the ball detection was fairly noisy. Third, the cameras had high latency, with a delay of almost 2 seconds. Especially, the third issue was a major barrier to getting the robot to hit a ball in motion, because by the time the cameras fed the first frames of the ball to the robot, the ball was already all the way across the table.
+
+For the first issue within frequency, we actually realized it was because the cameras were not synchronizing properly. After changing the synchronization code, we were able to do detection at a much higher frequency. To modify noise correctly, we applied a low pass filter to the ball position prediction, which reduced the high frequency noise.
+
+For the latency isue, this was unforunately outside of the scope of our work on this research project, we were not able to solve this issue. So, we modified our project goal to have the robot paddle follow the position of the ball at a distance, instead of trying to hit an approaching ball.

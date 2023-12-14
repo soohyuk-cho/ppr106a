@@ -25,6 +25,10 @@ Here are some detailed explanations on our trajectory figure:
 
 We found that most of the error is caused by the predicted curve being slightly lower than the true curve, which comes from noise in predicting the ball positions based on the camera frames. Even with this noise present, the overall prediction is still decent.
 
+### And here's our live update simulation video!
+<iframe width="730" height="350" src="//www.youtube.com/embed/5fMJRKkqF9g" frameborder="0"> </iframe>
+
+In this video above, you can see the body frame of the human player on one side of the ping pong table and a circle representing the ping pong paddle affixed to the end effector of the KUKA arm flush with the other side of the table. In the video, a ball approaches the human player who then returns the ball with a swing and live updates on the ball's position continuously updates the planned trajectory of the ball based on our linear regression model. Ultimately, the paddle is able to intercept the ball swung by the player by the time it reaches the other end of the table. Note that this is a real situation gathered from testing.
 
 ## Jacobian Joint Controller
 We decided to implement our own <span style="color:crimson">custom controller</span> because 1) the moveIt controller was too slow for the KUKA robot arm to acquire our desired speed and 2) we had compatibility issues as our research team moved back and forth between the ROS2 foxy version and ROS2 humble version for our KUKA control code. As a separate team works on figuring out how to resolve compatibility issues so that we can actually test our KUKA arm via our ROS2 code, we set up a virtual box container so that we can try testing the joint movement in simulation (using RViz and Gazebo). We confirmed that the simulation movement aligns with our robot using the joint trajectory executioner node, one of the demo files of LBR-Stack demos for KUKA's Fast Robot Interface. 

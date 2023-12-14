@@ -13,6 +13,25 @@ Our KUKA arm contains 7 revolute joints, and the ping pong paddle is connected t
 ## Vision & Sensing
 We use <span style="color:chocolate">four cameras</span> to view the table from different angles. For all four cameras, on every frame, two things happen. First, a <span style="color:chocolate">mask is applied to filter out</span> everything except for orange pixels (the color of the ping pong ball). Then, the <span style="color:chocolate">OpenCV Hough Circles algorithm</span>  is used to find any circles (the approximate shape of a ping pong ball) in the image. This particular algorithm works by computing all the edge pixels in the masked image. Then, for every edge pixel, it <span style="color:chocolate">computes the gradient vector</span> at that pixel and <span style="color:chocolate">considers all possible circles</span> whose center is in the direction of the gradient with a radius that intersects this edge point. It finally returns the circle that would hit the most edge pixels. After computing the ball position in all four camera frames, we triangulate the position of the ball in the world coordinates.
 
+<style>
+.container {
+  display: flex;
+  align-items: center; 
+  padding-left: 10px;
+}
+.image-block{
+  margin-left: 15px ;
+  margin-right: 15px;
+}
+</style>
+
+<div class="container">
+      <div class="image-block"> <img src="../assets/img/circle_bright1.png" alt="circle 1"/> </div> 
+      <div class="image-block"> <img src="../assets/img/circle_bright2.png" alt="circle 2"/> </div> 
+</div>
+
+As you might see in the pictures above, our team member *Anish* is holding a orange color ping pong ball on his hands. You can see that camera detects the ball correctly as there is a <span style="color:red">red circle surrounding the ball</span> and picks up nothing else.
+
 ## Planning
 Since we had to scrap our initial work on having the cameras predict the ball’s parabolic trajectory (due to camera latency), we instead fed target positions to the KUKA arm by projecting the position of the ball onto the paddle frame. We also apply a low pass filter here to reduce noise. Here's our hand-drawn visualization of design for path planning:
 ![Path planning](../assets/img/planning_img.png)

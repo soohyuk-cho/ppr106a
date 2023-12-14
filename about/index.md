@@ -13,15 +13,19 @@ Implement a KUKA manipulator controller to intercept an incoming high-speed ball
 (2) post-hit forecast updates for fine-grained planning.
 
 ## Introduction
-
+<img style="float: right; margin: 0px 0px 15px 15px;" src="../assets/img/robot-zero-config.png"/>
 
 Navigating high-speed environments presents a significant challenge for robots, especially in tasks like ping pong where predicting the trajectory of a fast-moving ball is crucial for timely responses.
 
 Our focus is on developing a system that uses visual cues from the game to predict future movements, helping a ping-pong-playing robot anticipate actions better despite uncertainties. With a good combination of visual modeling, prediction, and a control system that leverages these cues, we tried to simulate a robot so that it can make proper contact with the ping pong ball coming in with a high enough speed.
 
 ## High-level Goals
-<img style="float: right; margin: 0px 0px 15px 15px;" src="../assets/img/robot-zero-config.png"/>
 
+Our original goal was to maximize the probability that the paddle intercepts the incoming, high-speed ping pong ball, with our MVP being a successful interception. 
+
+The figure below illustrates our ideated structure of our ROS code initially. This brainstorming was instrumental in getting ramped up on the integration of the different components of the project.
+
+<img src="../assets/img/ros_init.png"/>
 
 **Computer Vision & Planning**
 
@@ -32,7 +36,7 @@ Our focus is on developing a system that uses visual cues from the game to predi
 
 **Controller**
 
-1.  Implement a custom controller
+1.  Implement a custom Jacobian controller
     
 2.  Implement Visual Servoing Algorithm
     
