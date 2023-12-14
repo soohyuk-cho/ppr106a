@@ -8,6 +8,9 @@ comments: false
 # Hardware design
 Our KUKA arm contains 7 revolute joints, and the ping pong paddle is connected to the end effector of our robot with a laser-cut wooden mount. Joint Control can be done by using ROS2. For our KUKA arm, we also have a physical controller. To take full control of the robot using our lab PC, we change the mode from *T1* (manual control) to *AUT* (Automated control) mode. Then, we kill the existing processes and reconnect to the application *LBRServer* with the selected remote IP address. After setting the send period and choosing *position controller*, we can take control of the KUKA arm using plan and execute commands in RViz as well as with our custom controller. All of this can be seen in the video below.
 
+### And here's video about how to control KUKA arm hardware!
+<iframe width="730" height="350" src="//youtube.com/embed/ZsRinlzt6Ig" frameborder="0"> </iframe>
+
 # Software design
 
 ## Vision & Sensing
