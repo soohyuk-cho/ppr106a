@@ -11,58 +11,38 @@ code: true
 ```python
 import kinpy
 import numpy as np
-from lbr_fri_msgs.msg import LBRCommand, LBRState
 from sensor_msgs.msg import JointState
-from typing import Tuple
 
 class IKController:
     
-    def __init__(
-        self,
-        robot_description: str,
-        base_link: str = "link_0",
-        end_effector_link: str = "link_ee",
-        world_config: kinpy.Transform = kinpy.Transform(),
-    ) -> None:
-        self.chain = kinpy.build_serial_chain_from_urdf(
-            data=robot_description,
+    def __init__(self, urdf, base_link="link_0", ee_link="link_ee", world_config=kinpy.Transform()):
+        self.chain = kinpy.build_serial_chain_from_urdf(                                                # Gets the kinematics information
+            data=urdf,                                                                                  # for the robot from the urdf.
             root_link_name=base_link,
-            end_link_name=end_effector_link,
+            end_link_name=ee_link,
         )
         self.world_config = world_config.matrix()
-        self.velocity_limits = np.array([1.4, 1.4, 1.7, 1.25, 2.2, 2.3, 2.3])
-        # self.velocity_limits = np.array([1, 1, 1, 1, 1, 1, 1])
+        velocity_scale = 0.3
+        self.velocity_limits = np.array([1.4, 1.4, 1.7, 1.25, 2.2, 2.3, 2.3]) * velocity_scale          # Computes the limits on velocity
+        self.position_limits = np.array([2.96, 2.09, 2.96, 2.09, 2.96, 2.09, 3.05])                     # and position.
 
-    def step_control(self, target: np.ndarray, joint_state: JointState) -> np.ndarray:
-        """
-        Parameters
-        ----------
-        target: 3x' :obj:`numpy.ndarray` of the desired target position in the world frame
-        lbr_state: LBRState of the current joint configuration
-        sample_period: float of time between calls to controller
+        self.error_epsilon = 0.01                                                                       # Reduce error to within 1cm.
 
-        Returns
-        -------
-        7x' :obj:`numpy.ndarray` of joint positions for arm to move towards
-        """
-        theta = np.array(joint_state.position)
-        theta[2], theta[3] = theta[3], theta[2] # Fixes an evil bug
-        target_position = (np.linalg.inv(self.world_config) @ np.append(target, 1))[:3]
-        current_config = self.chain.forward_kinematics(theta).matrix()
-        target_config = kinpy.Transform(np.array([np.sqrt(2)/2, 0, 0, np.sqrt(2)/2]), target_position)
-        error_config = np.linalg.inv(current_config) @ target_config.matrix()
-        print(f"Error: {np.linalg.norm(error_config[:3, 3])}")
-        target_theta = self.chain.inverse_kinematics(target_config)
-        if np.linalg.norm(error_config[:3, 3]) < 0.01:
-            print("Stopped")
-            return None, None
-        required_time = np.max((theta - target_theta) / self.velocity_limits)
-        return target_theta, required_time
+    def step_control(self, target, joint_state):
+        theta = np.array(joint_state.position)                                                          # Get the joint angles.
+        theta[2], theta[3] = theta[3], theta[2]                                                         # Fixes an evil bug.
+        target_position = (np.linalg.inv(self.world_config) @ np.append(target, 1))[:3]                 # Put the target in the KUKA base frame.
+        target_config = kinpy.Transform(np.array([np.sqrt(2)/2, 0, 0, np.sqrt(2)/2]), target_position)  # Orients paddle facing towards table.
 
-    def get_ee_position(self, joint_state: JointState):
-        theta = np.array(joint_state.position)
-        theta[2], theta[3] = theta[3], theta[2] # Fixes an evil bug
-        current_config = self.chain.forward_kinematics(theta)
-        # current_config = self.robot_model.get_global_link_transform("link_ee", theta)
-        return current_config
+        current_config = self.chain.forward_kinematics(theta).matrix()                                  # Get the current configuation
+        error_config = np.linalg.inv(current_config) @ target_config.matrix()                           # and the error configuration,
+        if np.linalg.norm(error_config[:3, 3]) < self.error_epsilon:                                    # and stops sending commands to KUKA
+            return None, None                                                                           # when the error is small.
+
+        target_theta = self.chain.inverse_kinematics(target_config)                                     # Compute goal joint angles using IK.
+        target_theta = np.minimum(target_theta, self.position_limits)                                   # Keeps joint angles in safe region.
+        target_theta = np.maximum(target_theta, -self.position_limits)
+
+        required_time = np.max(np.abs(theta - target_theta) / self.velocity_limits)                     # Computes minimum time to execute move
+        return target_theta, required_time                                                              # given limits on joint velocity.
 ```

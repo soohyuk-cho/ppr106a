@@ -1,53 +1,40 @@
 ---
 layout: post
-title: "Joint Controller"
+title: "Jacobian Controller"
 date: 2023-12-12
-excerpt: "Joint Controller Code"
+excerpt: "Jacobian Controller Code"
 comments: false
 project: true
 code: true
 ---
-### Here's our python implementation of joint controller: 
+### Here's our python implementation of Jacobian joint controller: 
 ```python
 import kinpy
 import numpy as np
-from lbr_fri_msgs.msg import LBRPositionCommand, LBRState
-from typing import Tuple
+from sensor_msgs.msg import JointState
 
 class WorkspaceVelocityController:
     
     def __init__(
-        self,
-        robot_description: str,
-        base_link: str = "link_0",
-        end_effector_link: str = "link_ee",
-        world_config: kinpy.Transform,
-        Kp: np.ndarray,
-    ) -> None:
-        self.chain_ = kinpy.build_serial_chain_from_urdf(
+        self, 
+        robot_description, 
+        base_link="link_0", 
+        end_effector_link="link_ee", 
+        world_config=kinpy.Transform(), 
+        Kp=np.ndarray([1, 1, 1, 1, 1, 1]),
+    ):
+        self.chain = kinpy.build_serial_chain_from_urdf(                                        # Create robot model from urdf
             data=robot_description,
             root_link_name=base_link,
             end_link_name=end_effector_link,
         )
-        self.dof_ = len(self.chain_.get_joint_parameter_names())
-        self.world_config = world_config
-        self.Kp = np.diag(Kp)
-        self.lbr_position_command = LBRPositionCommand()
+        self.world_config = world_config.matrix()                                               # Base to world frame transform
+        self.Kp = np.diag(Kp)                                                                   # Gain matrix
+        self.have_stopped = False                                                               # To check if error is small enough
+        self.velocity_limits = np.array([1.4, 1.4, 1.7, 1.25, 2.2, 2.3, 2.3])                   # Max joint velocities
 
-    def hat(v):
-        """
-        See https://en.wikipedia.org/wiki/Hat_operator or the MLS book
 
-        Parameters
-        ----------
-        v : :obj:`numpy.ndarrray`
-            vector form of shape 3x1, 3x, 6x1, or 6x
-
-        Returns
-        -------
-        3x3 or 6x6 :obj:`numpy.ndarray`
-            hat version of the vector v
-        """
+    def hat(self, v):                                                                           # Computes hat map of v in R3
         if v.shape == (3, 1) or v.shape == (3,):
             return np.array([
                     [0, -v[2], v[1]],
@@ -64,19 +51,8 @@ class WorkspaceVelocityController:
         else:
             raise ValueError
 
-    def adj(g):
-        """
-        Adjoint of a rotation matrix.  See the MLS book
 
-        Parameters
-        ----------
-        g : 4x4 :obj:`numpy.ndarray`
-            Rotation matrix
-
-        Returns
-        -------
-        6x6 :obj:`numpy.ndarray` 
-        """
+    def adjoint(self, g):                                                                       # Computes adjoint of a twist
         if g.shape != (4, 4):
             raise ValueError
 
@@ -84,20 +60,17 @@ class WorkspaceVelocityController:
         p = g[0:3,3]
         result = np.zeros((6, 6))
         result[0:3,0:3] = R
-        result[0:3,3:6] = hat(p) * R
+        result[0:3,3:6] = self.hat(p) * R
         result[3:6,3:6] = R
         return result
 
-    def g_matrix_log(self, g: np.ndarray) -> Tuple[np.ndarray, float]:
-        """
-        Given a homogenous transform g, returns a unit twist xi and
-        real number theta so that g = exp(xi * theta)
-        """
-        R = g[:3, :3]
+
+    def g_matrix_log(self, g: np.ndarray) -> Tuple[np.ndarray, float]:                          # Computes matrix log
+        R = g[:3, :3]                                                                           # SE(3) -> se(3)
         p = g[:3, 3]
         w, theta = self.rot_matrix_log(R)
         if w.any():
-            A = np.matmul(np.eye(3) - R, hat(w)) + np.outer(w, w) * theta
+            A = np.matmul(np.eye(3) - R, self.hat(w)) + np.outer(w, w) * theta
             v = np.linalg.solve(A, p)
         else: 
             w = np.zeros(3)
@@ -106,44 +79,45 @@ class WorkspaceVelocityController:
         xi = np.hstack((v, w))
         return xi, theta
 
-    def rot_matrix_log(self, R: np.ndarray) -> Tuple[np.ndarray, float]:
-        """
-        Given a rotation matrix R, returns the axis angle representation
-        of the rotation. Returns (w, theta) so that exp(w * theta) = R.
-        """
-        tr_R = min(3, max(-1, sum(R[i, i] for i in range(3))))
+
+    def rot_matrix_log(self, R: np.ndarray) -> Tuple[np.ndarray, float]:                        # Computes matrix log
+        tr_R = min(3, max(-1, sum(R[i, i] for i in range(3))))                                  # SO(3) -> so(3)
         theta = np.arccos((tr_R - 1) / 2.0)
         w = (1 / (2 * np.sin(theta))) * np.array([R[2, 1] - R[1, 2],
                                                   R[0, 2] - R[2, 0],
                                                   R[1, 0] - R[0, 1]])
         return w, theta
 
-    def step_control(self, target: np.ndarray, lbr_state: LBRState, sample_period: float) -> np.ndarray:
-        """
-        Parameters
-        ----------
-        target: 3x' :obj:`numpy.ndarray` of the desired target position in the world frame
-        lbr_state: LBRState of the current joint configuration
-        sample_period: float of time between calls to controller
 
-        Returns
-        -------
-        7x' :obj:`numpy.ndarray` of joint positions for arm to move towards
-        """
-        theta = np.array(lbr_state.measured_joint_position)
-        target_position = (np.linalg.inv(self.world_config) @ np.append(target, 1))[:3]
-        current_config = self.chain.forward_kinematics(theta).matrix()
-        target_config = kinpy.Transform(np.array([0, 1, 0, 0]), target_position).matrix()
-        error_config = np.linalg.inv(current_config) @ target_config
-        xi, theta = self.g_matrix_log(error_config)
-        error_twist = xi * theta
-        jacobian_pinv = np.linalg.pinv(self.chain.jacobian(theta), rcond=0.1)
-        theta_dot = jacobian_pinv @ self.Kp @ self.adjoint(current_config) @ error_twist
-        self.lbr_position_command.joint_position = (theta + sample_period * theta_dot).data
-        return self.lbr_position_command
+    def step_control(self, target, joint_state, sample_period):                                 # Controller method
+        theta = np.array(joint_state.position)                                                  # Get current joint positions
+        theta[2], theta[3] = theta[3], theta[2]                                                 # Fixes an evil bug
+        target_position = (np.linalg.inv(self.world_config) @ np.append(target, 1))[:3]         # Puts target position in KUKA frame
+        current_config = self.chain.forward_kinematics(theta).matrix()                          # Get current SE(3) config of KUKA EE
+        target_config = kinpy.Transform(                                                        # Target is facing upwards towards table
+            np.array([np.sqrt(2)/2, 0, 0, np.sqrt(2)/2]),
+            target_position
+        ).matrix()
+        error_config = np.linalg.inv(current_config) @ target_config                            # Compute error config
+        xi, twist_theta = self.g_matrix_log(error_config)                                       # Compute error twist
+        error_twist = xi * twist_theta
 
-    def get_ee_position(self, lbr_state):
-        theta = np.array(lbr_state.measured_joint_position)
-        current_config = self.chain.forward_kinematics(theta).matrix()
-        return current_config
+        if np.any(error_twist > 10) or np.any(error_twist < -10):                               # Throw error if twist is too large
+            raise Exception                                                                     # (this comes from singular configurations)
+            return
+
+        jacobian_pinv = np.linalg.pinv(self.chain.jacobian(theta), rcond=0.1)                   # Compute Jacobian psuedoinverse
+        theta_dot = jacobian_pinv @ self.Kp @ self.adjoint(current_config) @ error_twist        # Joint velocity computation
+        K = np.max(np.abs(theta_dot) / self.velocity_limits)                                    # Scaling factor to keep joint velocities
+        theta_dot = theta_dot / K                                                               # in safe region
+
+        if np.linalg.norm(error_config[:3, 3]) < 0.01:                                          # Joint velocity is 0 when controller is stopped
+            if self.have_stopped:
+                return theta, np.zeros(7)
+            else:
+                self.have_stopped = True
+                return theta + sample_period * theta_dot, np.zeros(7)
+        else:
+            self.have_stopped = False
+            return theta + sample_period * theta_dot, theta_dot                                 # Returns next position and velocity
 ```

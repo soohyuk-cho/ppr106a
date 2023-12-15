@@ -13,12 +13,14 @@ Implement a KUKA manipulator controller to intercept an incoming high-speed ball
 
 (2) post-hit forecast updates for fine-grained planning.
 
-## Introduction
+## About Ping Pong Robotics (PPR) Project
 <img style="float: right; margin: 0px 0px 15px 15px;" src="../assets/img/robot-zero-config.png"/>
 
-Navigating high-speed environments presents a significant challenge for robots, especially in tasks like ping pong where predicting the trajectory of a fast-moving ball is crucial for timely responses.
+Navigating high-speed environments presents a significant challenge for robots, especially in tasks like ping pong where predicting the trajectory of a fast-moving ball is crucial for timely responses. This PPR project is fascinating as it delves into the challenges of controlling a robot in a high-speed environment, specifically intercepting a swiftly moving ping pong ball. Predicting the trajectory of the ball before and after impact demands precision in interpreting visual cues and making split-second decisions for effective robot responses. We're tackling the complexities of real-time prediction and response to fast movements, using computer vision to track the ball and refining our calculations with post-hit data. Developing a custom Jacobian controller and implementing a Visual Servoing Algorithm highlights our need for sophisticated control systems adaptable to dynamic scenarios. Our ultimate goal—to employ a KUKA manipulator not just to intercept but also return a high-speed hit—underscores the comprehensive nature of this challenge, demanding seamless coordination between perception, prediction, and action.
 
 Our focus is on developing a system that uses visual cues from the game to predict future movements, helping a ping-pong-playing robot anticipate actions better despite uncertainties. With a good combination of visual modeling, prediction, and a control system that leverages these cues, we tried to simulate a robot so that it can make proper contact with the ping pong ball coming in with a high enough speed.
+
+The applications of our work span beyond the realm of ping pong. The technology and methodologies we're developing hold promise in various real-world robotics applications. Numerous subfields of robotics that require precise object interception or manipulation in high-speed environments, such as manufacturing assembly lines dealing with swiftly moving components or automated quality control systems, could significantly benefit from our predictive and adaptive capabilities. Moreover, fields like sports training or rehabilitation robotics, emphasizing hand-eye coordination and precise motor control, stand to gain from the techniques we're refining through this project. Overall, our fusion of predictive modeling, computer vision, and adaptable control systems opens doors to enhancing robot performance in diverse scenarios where rapid and accurate decision-making is paramount.
 
 ## High-level Goals
 
